@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>灵感发散器 | Inspiration Divergence</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --card: #1a1a2e;
+            --border: #2a2a3e;
+            --text: #e8e8f0;
+            --text-dim: #8888a0;
+            --accent: #6c5ce7;
+            --accent2: #00cec9;
+            --accent3: #fd79a8;
+            --accent4: #fdcb6e;
+            --accent5: #55efc4;
+            --accent6: #e17055;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        .app-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* ===== Top Bar ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            z-index: 20;
+            flex-shrink: 0;
+        }
+
+        .top-bar h1 {
+            font-size: 1.1rem;
+            font-weight: 900;
+            white-space: nowrap;
+            background: linear-gradient(135deg, var(--accent4), var(--accent3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .input-wrap {
+            flex: 1;
+            display: flex;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .input-wrap input {
+            flex: 1;
+            padding: 8px 14px;
+            font-size: 0.9rem;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s;
+            min-width: 0;
+        }
+
+        .input-wrap input:focus { border-color: var(--accent); }
+        .input-wrap input::placeholder { color: var(--text-dim); }
+
+        .btn-go {
+            padding: 8px 18px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent4), #f39c12);
+            border: none;
+            border-radius: 10px;
+            color: #1a1a2e;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        /* ===== Graph Viewport ===== */
+        .graph-viewport {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .graph-world {
+            position: absolute;
+            transform-origin: 0 0;
+            will-change: transform;
+        }
+
+        .graph-world svg.lines-layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+        }
+
+        /* ===== Graph Nodes (HTML) ===== */
+        .gnode {
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: box-shadow 0.25s, transform 0.15s;
+            user-select: none;
+            -webkit-user-select: none;
+            line-height: 1.25;
+            padding: 6px;
+            word-break: break-all;
+        }
+
+        .gnode:hover, .gnode.touch-hover {
+            z-index: 5;
+            transform: scale(1.08);
+        }
+
+        .gnode.center-node {
+            font-size: 1.1rem;
+            font-weight: 900;
+            z-index: 3;
+            box-shadow: 0 0 30px rgba(253, 203, 110, 0.35);
+            animation: centerPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes centerPulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(253, 203, 110, 0.35); }
+            50% { box-shadow: 0 0 50px rgba(253, 203, 110, 0.5); }
+        }
+
+        .gnode.mode-node {
+            font-size: 0.8rem;
+            font-weight: 700;
+            z-index: 2;
+            border: 2px solid rgba(255,255,255,0.15);
+        }
+
+        .gnode.idea-node {
+            font-size: 0.75rem;
+            font-weight: 500;
+            z-index: 1;
+            border: 1.5px solid rgba(255,255,255,0.1);
+        }
+
+        .gnode .badge {
+            position: absolute;
+            top: -4px; right: -4px;
+            min-width: 18px; height: 18px;
+            border-radius: 9px;
+            background: var(--accent6);
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
+        /* ===== Mode Sidebar ===== */
+        .mode-sidebar {
+            position: absolute;
+            top: 10px; left: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 15;
+        }
+
+        .mode-pill {
+            padding: 6px 10px;
+            font-size: 0.7rem;
+            background: rgba(18, 18, 26, 0.92);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .mode-pill:hover { border-color: var(--accent); color: var(--text); }
+
+        .mode-pill.active {
+            border-color: var(--accent4);
+            background: rgba(253, 203, 110, 0.12);
+            color: var(--accent4);
+        }
+
+        /* ===== Stats ===== */
+        .stats-float {
+            position: absolute;
+            top: 10px; right: 10px;
+            display: flex;
+            gap: 6px;
+            z-index: 15;
+        }
+
+        .stat-chip {
+            padding: 5px 10px;
+            font-size: 0.7rem;
+            background: rgba(18, 18, 26, 0.92);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-dim);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .stat-chip strong { color: var(--accent4); }
+
+        /* ===== Empty State ===== */
+        .empty-overlay {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .empty-overlay .icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.4; }
+        .empty-overlay p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.8; }
+
+        /* ===== Detail Panel ===== */
+        .detail-panel {
+            position: absolute;
+            bottom: 60px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            width: 92%; max-width: 420px;
+            background: rgba(26, 26, 46, 0.96);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px 20px;
+            z-index: 25;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .detail-panel.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: all;
+        }
+
+        .detail-panel h3 { font-size: 1rem; margin-bottom: 6px; }
+        .detail-panel p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.7; }
+
+        .detail-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+
+        .detail-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            justify-content: flex-end;
+        }
+
+        .detail-btn {
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .detail-btn:hover { border-color: var(--accent); color: var(--text); }
+
+        .detail-close {
+            position: absolute;
+            top: 10px; right: 14px;
+            background: none; border: none;
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        /* ===== Bottom Bar ===== */
+        .bottom-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 14px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            z-index: 20;
+            overflow-x: auto;
+            flex-shrink: 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .btn-bottom {
+            padding: 7px 14px;
+            font-size: 0.8rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .btn-bottom:hover { border-color: var(--accent); color: var(--text); }
+
+        .btn-bottom.primary {
+            background: linear-gradient(135deg, var(--accent3), #e84393);
+            border-color: transparent;
+            color: white;
+        }
+
+        /* ===== Zoom Controls ===== */
+        .zoom-controls {
+            position: absolute;
+            bottom: 10px; right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 15;
+        }
+
+        .zoom-btn {
+            width: 36px; height: 36px;
+            font-size: 1.1rem;
+            background: rgba(18, 18, 26, 0.92);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        /* ===== Saved Panel ===== */
+        .saved-panel {
+            position: fixed;
+            top: 0; right: -380px;
+            width: 360px; max-width: 90vw;
+            height: 100vh;
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            z-index: 50;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .saved-panel.open { right: 0; }
+
+        .saved-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .saved-panel-header h2 { font-size: 1.1rem; }
+
+        .saved-panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px;
+        }
+
+        .saved-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+        }
+
+        .saved-item-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .saved-item-tag {
+            padding: 2px 7px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            border-radius: 4px;
+        }
+
+        .saved-item-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 3px; }
+        .saved-item-desc { font-size: 0.75rem; color: var(--text-dim); line-height: 1.5; }
+
+        .btn-rm {
+            padding: 3px 8px;
+            font-size: 0.65rem;
+            background: transparent;
+            border: 1px solid rgba(225, 112, 85, 0.3);
+            border-radius: 5px;
+            color: var(--accent6);
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .overlay-bg {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 49;
+        }
+
+        .overlay-bg.show { display: block; }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 480px) {
+            .top-bar { padding: 10px 12px; gap: 8px; }
+            .top-bar h1 { font-size: 0.95rem; }
+            .input-wrap input { padding: 7px 10px; font-size: 0.85rem; }
+            .btn-go { padding: 7px 14px; font-size: 0.85rem; }
+            .mode-sidebar { top: 6px; left: 6px; }
+            .mode-pill { padding: 5px 8px; font-size: 0.65rem; }
+            .stats-float { top: 6px; right: 6px; }
+            .stat-chip { padding: 4px 8px; font-size: 0.65rem; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    </style>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <h1>💡 灵感发散器</h1>
+            <div class="input-wrap">
+                <input type="text" id="topicInput" placeholder="输入一个词，开始创意旅程..." autocomplete="off">
+                <button class="btn-go" onclick="diverge()">发散</button>
+            </div>
+        </div>
+
+        <!-- Graph Viewport -->
+        <div class="graph-viewport" id="viewport">
+            <div class="graph-world" id="world">
+                <svg class="lines-layer" id="linesLayer"></svg>
+            </div>
+
+            <!-- Mode Sidebar -->
+            <div class="mode-sidebar">
+                <button class="mode-pill active" data-mode="all">🌈 全部</button>
+                <button class="mode-pill" data-mode="reverse">🔄 逆向</button>
+                <button class="mode-pill" data-mode="random">🔀 联想</button>
+                <button class="mode-pill" data-mode="scamper">🧩 SCAMPER</button>
+                <button class="mode-pill" data-mode="cross">🌊 跨界</button>
+                <button class="mode-pill" data-mode="extreme">💥 极端</button>
+                <button class="mode-pill" data-mode="role">🎭 换位</button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-float" id="statsFloat" style="display:none">
+                <div class="stat-chip">灵感 <strong id="statN">0</strong></div>
+                <div class="stat-chip">角度 <strong id="statM">0</strong></div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-overlay" id="emptyState">
+                <div class="icon">✨</div>
+                <p>输入一个关键词，开启灵感之旅<br>或点击下方「灵感炸弹」</p>
+            </div>
+
+            <!-- Detail Panel -->
+            <div class="detail-panel" id="detailPanel">
+                <button class="detail-close" onclick="closeDetail()">&times;</button>
+                <span class="detail-tag" id="detailTag"></span>
+                <h3 id="detailTitle"></h3>
+                <p id="detailDesc"></p>
+                <div class="detail-actions">
+                    <button class="detail-btn" onclick="saveFromDetail()">⭐ 收藏</button>
+                    <button class="detail-btn" onclick="diveFromDetail()">🔍 深挖</button>
+                </div>
+            </div>
+
+            <!-- Zoom Controls -->
+            <div class="zoom-controls">
+                <button class="zoom-btn" onclick="zoomIn()">+</button>
+                <button class="zoom-btn" onclick="zoomOut()">−</button>
+                <button class="zoom-btn" onclick="resetView()" style="font-size:0.7rem">⊙</button>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="bottom-bar">
+            <button class="btn-bottom primary" onclick="inspirationBomb()">💣 灵感炸弹</button>
+            <button class="btn-bottom" onclick="regenerate()">🔄 重新发散</button>
+            <button class="btn-bottom" onclick="toggleSavedPanel()">⭐ 收藏 (<span id="savedCount">0</span>)</button>
+            <button class="btn-bottom" onclick="exportIdeas()">📋 导出</button>
+        </div>
+    </div>
+
+    <!-- Saved Panel -->
+    <div class="overlay-bg" id="overlayBg" onclick="toggleSavedPanel()"></div>
+    <div class="saved-panel" id="savedPanel">
+        <div class="saved-panel-header">
+            <h2>⭐ 灵感收藏</h2>
+            <button onclick="toggleSavedPanel()" style="background:none;border:none;color:var(--text-dim);font-size:1.2rem;cursor:pointer;">&times;</button>
+        </div>
+        <div class="saved-panel-body" id="savedList"></div>
+    </div>
+
+    <script>
+    // ========== Color & Label Config ==========
+    const MODE_COLORS = {
+        center:  { bg: '#fdcb6e', text: '#1a1a2e' },
+        reverse: { bg: '#6c5ce7', text: '#fff' },
+        random:  { bg: '#00cec9', text: '#1a1a2e' },
+        scamper: { bg: '#fdcb6e', text: '#1a1a2e' },
+        cross:   { bg: '#fd79a8', text: '#fff' },
+        extreme: { bg: '#e17055', text: '#fff' },
+        role:    { bg: '#55efc4', text: '#1a1a2e' }
+    };
+
+    const MODE_LABELS = {
+        reverse: '逆向思维', random: '随机联想', scamper: 'SCAMPER',
+        cross: '跨界碰撞', extreme: '极端假设', role: '角色换位'
+    };
+
+    const MODE_ICONS = {
+        reverse: '🔄', random: '🔀', scamper: '🧩',
+        cross: '🌊', extreme: '💥', role: '🎭'
+    };
+
+    // ========== Idea Generation Data ==========
+    const RANDOM_WORDS = [
+        '猫','月亮','雨伞','钥匙','镜子','种子','指南针','气球','桥梁','钟表',
+        '风筝','蜡烛','贝壳','橡皮筋','拼图','磁铁','影子','回声','滤镜','密码',
+        '充电','发芽','发酵','折叠','悬浮','镜像','循环','裂变','共生','逆行',
+        '伪装','蜕变','蒸汽朋克','赛博朋克','侘寂','禅','极简','混沌','量子','暗物质'
+    ];
+
+    const CROSS_DOMAINS = [
+        '生物学','天文学','心理学','建筑学','音乐','游戏设计','园艺','烹饪',
+        '中医','动漫','军事战略','极限运动','哲学','经济学','社会学','神话',
+        '考古学','魔术','脱口秀','行为艺术','数据科学','太空探索','深海','仿生学'
+    ];
+
+    const ROLES = [
+        '5岁小孩','80岁老人','外星人','时间旅行者','侦探','诗人','经济学家',
+        '黑客','僧侣','摇滚歌手','家庭主妇','宇航员','渔夫','外科医生','漫画家',
+        '投资人','运动员','厨师','建筑师','哲学家'
+    ];
+
+    const SCAMPER = {
+        S: { name: '替代', q: '能否用别的东西替代？' },
+        C: { name: '组合', q: '能否与其他事物组合？' },
+        A: { name: '调整', q: '能否改变现有特征？' },
+        M: { name: '放大', q: '能否放大、加重、加长？' },
+        P: { name: '另作他用', q: '能否用于完全不同的场景？' },
+        E: { name: '消除', q: '能否去掉、简化、缩小？' },
+        R: { name: '重排', q: '能否颠倒、反转、重新排列？' }
+    };
+
+    const EXTREMES = [
+        '如果预算为零呢？','如果只有1分钟呢？','如果用户全是老年人呢？',
+        '如果必须在火星上做呢？','如果不能使用互联网呢？','如果必须让5岁小孩也能用呢？',
+        '如果永远不能修改呢？','如果必须同时服务1亿人呢？','如果完全无人监管呢？',
+        '如果必须在黑暗中使用呢？','如果只能用声音交互呢？','如果必须在一夜之间完成呢？'
+    ];
+
+    const BOMB_TOPICS = [
+        '副业','咖啡','健身','读书','旅行','美食','穿搭','摄影','宠物','音乐',
+        '电影','手工','种植','冥想','社交','效率','省钱','学习','设计','写作',
+        '上班','减肥','装修','恋爱','育儿','存钱','做饭','跑步','早起','极简'
+    ];
+
+    // ========== State ==========
+    let currentMode = 'all';
+    let allIdeas = [];
+    let savedIdeas = JSON.parse(localStorage.getItem('diverge_saved') || '[]');
+    let currentTopic = '';
+    let selectedNodeEl = null;
+
+    // ========== Graph Layout State ==========
+    const world = document.getElementById('world');
+    const viewport = document.getElementById('viewport');
+    const linesLayer = document.getElementById('linesLayer');
+
+    // Virtual coordinate system — everything in "world" coordinates
+    const WORLD_W = 1600;
+    const WORLD_H = 1600;
+    const CX = WORLD_W / 2;
+    const CY = WORLD_H / 2;
+
+    // Pan & zoom
+    let scale = 1;
+    let panX = 0, panY = 0;
+    let isDragging = false;
+    let dragStartX, dragStartY, panStartX, panStartY;
+
+    function updateTransform() {
+        world.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+    }
+
+    function centerView() {
+        const vw = viewport.clientWidth;
+        const vh = viewport.clientHeight;
+        scale = Math.min(vw / WORLD_W, vh / WORLD_H) * 0.92;
+        scale = Math.min(scale, 1.2); // cap on large screens
+        panX = (vw - WORLD_W * scale) / 2;
+        panY = (vh - WORLD_H * scale) / 2;
+        updateTransform();
+    }
+
+    function zoomIn() { scale = Math.min(scale * 1.25, 3); updateTransform(); }
+    function zoomOut() { scale = Math.max(scale / 1.25, 0.3); updateTransform(); }
+    function resetView() { centerView(); }
+
+    // Pan support (mouse + touch)
+    viewport.addEventListener('mousedown', e => {
+        if (e.target.closest('.gnode') || e.target.closest('.mode-pill') || e.target.closest('.zoom-btn')) return;
+        isDragging = true;
+        dragStartX = e.clientX; dragStartY = e.clientY;
+        panStartX = panX; panStartY = panY;
+        viewport.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        panX = panStartX + (e.clientX - dragStartX);
+        panY = panStartY + (e.clientY - dragStartY);
+        updateTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+        isDragging = false;
+        viewport.style.cursor = 'grab';
+    });
+
+    // Touch pan
+    let touchStartX, touchStartY, touchPanStartX, touchPanStartY;
+    let lastTouchDist = 0;
+
+    viewport.addEventListener('touchstart', e => {
+        if (e.target.closest('.gnode') || e.target.closest('.mode-pill') || e.target.closest('.zoom-btn')) return;
+        if (e.touches.length === 1) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            touchPanStartX = panX;
+            touchPanStartY = panY;
+        } else if (e.touches.length === 2) {
+            lastTouchDist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+        }
+    }, { passive: true });
+
+    viewport.addEventListener('touchmove', e => {
+        if (e.target.closest('.gnode') || e.target.closest('.mode-pill') || e.target.closest('.zoom-btn')) return;
+        if (e.touches.length === 1) {
+            panX = touchPanStartX + (e.touches[0].clientX - touchStartX);
+            panY = touchPanStartY + (e.touches[0].clientY - touchStartY);
+            updateTransform();
+        } else if (e.touches.length === 2) {
+            const dist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            if (lastTouchDist > 0) {
+                const ratio = dist / lastTouchDist;
+                scale = Math.min(Math.max(scale * ratio, 0.3), 3);
+                updateTransform();
+            }
+            lastTouchDist = dist;
+        }
+    }, { passive: true });
+
+    viewport.addEventListener('touchend', () => { lastTouchDist = 0; });
+
+    // Mouse wheel zoom
+    viewport.addEventListener('wheel', e => {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? 0.9 : 1.1;
+        scale = Math.min(Math.max(scale * delta, 0.3), 3);
+        updateTransform();
+    }, { passive: false });
+
+    // ========== Build Graph ==========
+    let nodeElements = []; // track for cleanup
+
+    function clearGraph() {
+        nodeElements.forEach(el => el.remove());
+        nodeElements = [];
+        linesLayer.innerHTML = '';
+    }
+
+    function buildGraph(topic, ideas) {
+        clearGraph();
+        world.style.width = WORLD_W + 'px';
+        world.style.height = WORLD_H + 'px';
+        linesLayer.setAttribute('viewBox', `0 0 ${WORLD_W} ${WORLD_H}`);
+
+        // Group ideas by mode
+        const groups = {};
+        ideas.forEach(idea => {
+            if (!groups[idea.mode]) groups[idea.mode] = [];
+            groups[idea.mode].push(idea);
+        });
+
+        const modeKeys = Object.keys(groups);
+        const modeCount = modeKeys.length;
+        if (modeCount === 0) return;
+
+        const angleStep = (Math.PI * 2) / modeCount;
+        const R1 = 320; // center → mode node distance
+        const R2 = 220; // mode node → idea node distance
+
+        // === Center Node ===
+        const centerEl = createNode(CX, CY, topic, 'center', 70);
+        if (allIdeas.length > 0) {
+            const badge = document.createElement('span');
+            badge.className = 'badge';
+            badge.textContent = allIdeas.length;
+            centerEl.appendChild(badge);
+        }
+
+        // === Mode & Idea Nodes ===
+        modeKeys.forEach((mode, mi) => {
+            const baseAngle = angleStep * mi - Math.PI / 2;
+            const mx = CX + Math.cos(baseAngle) * R1;
+            const my = CY + Math.sin(baseAngle) * R1;
+
+            // Mode node
+            const modeEl = createNode(mx, my, MODE_LABELS[mode], 'mode', 60, mode);
+
+            // Line: center → mode
+            drawLine(CX, CY, mx, my, mode, 2.5);
+
+            const groupIdeas = groups[mode];
+            const n = groupIdeas.length;
+
+            groupIdeas.forEach((idea, ii) => {
+                // Spread idea nodes in a fan around the mode node
+                const fanAngle = Math.min(0.45, 0.25 * n); // fan width per side
+                const ideaAngle = baseAngle + (ii - (n - 1) / 2) * (fanAngle * 2 / Math.max(n - 1, 1));
+                const ix = mx + Math.cos(ideaAngle) * R2;
+                const iy = my + Math.sin(ideaAngle) * R2;
+
+                // Truncate display label
+                let display = idea.title;
+                if (display.length > 8) display = display.slice(0, 7) + '…';
+
+                const ideaEl = createNode(ix, iy, display, 'idea', 55, mode);
+                ideaEl.dataset.fullTitle = idea.title;
+                ideaEl.dataset.fullDesc = idea.desc;
+                ideaEl.dataset.ideaIndex = allIdeas.indexOf(idea);
+
+                // Line: mode → idea
+                drawLine(mx, my, ix, iy, mode, 1.5);
+            });
+        });
+
+        // Center the view
+        centerView();
+    }
+
+    function createNode(x, y, label, type, size, mode) {
+        const el = document.createElement('div');
+        el.className = `gnode ${type}-node`;
+
+        const mc = mode ? MODE_COLORS[mode] : MODE_COLORS.center;
+        el.style.width = size + 'px';
+        el.style.height = size + 'px';
+        el.style.left = (x - size / 2) + 'px';
+        el.style.top = (y - size / 2) + 'px';
+        el.style.background = mc.bg;
+        el.style.color = mc.text;
+        el.style.boxShadow = `0 0 20px ${mc.bg}40`;
+
+        // For center node, handle line breaks for long text
+        if (type === 'center' && label.length > 3) {
+            const mid = Math.ceil(label.length / 2);
+            el.innerHTML = `<span style="display:block;font-size:0.85em">${label.slice(0, mid)}</span><span style="display:block;font-size:0.85em">${label.slice(mid)}</span>`;
+        } else {
+            el.textContent = label;
+        }
+
+        // Click handler for idea nodes
+        if (type === 'idea') {
+            el.addEventListener('click', e => {
+                e.stopPropagation();
+                selectNode(el, mode);
+            });
+            el.addEventListener('touchend', e => {
+                e.stopPropagation();
+                // Don't prevent default to avoid interfering with pan
+                selectNode(el, mode);
+            });
+        }
+
+        world.appendChild(el);
+        nodeElements.push(el);
+        return el;
+    }
+
+    function selectNode(el, mode) {
+        // Deselect previous
+        if (selectedNodeEl) selectedNodeEl.classList.remove('touch-hover');
+        selectedNodeEl = el;
+        el.classList.add('touch-hover');
+
+        const idx = parseInt(el.dataset.ideaIndex);
+        if (idx >= 0 && idx < allIdeas.length) {
+            const idea = allIdeas[idx];
+            const mc = MODE_COLORS[mode] || MODE_COLORS.random;
+            document.getElementById('detailTag').textContent = MODE_LABELS[mode] || mode;
+            document.getElementById('detailTag').style.background = mc.bg;
+            document.getElementById('detailTag').style.color = mc.text;
+            document.getElementById('detailTitle').textContent = idea.title;
+            document.getElementById('detailDesc').textContent = idea.desc;
+            document.getElementById('detailPanel').classList.add('show');
+        }
+    }
+
+    function drawLine(x1, y1, x2, y2, mode, width) {
+        const mc = MODE_COLORS[mode] || MODE_COLORS.random;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        line.setAttribute('stroke', mc.bg);
+        line.setAttribute('stroke-opacity', '0.35');
+        line.setAttribute('stroke-width', width);
+        line.setAttribute('stroke-linecap', 'round');
+        linesLayer.appendChild(line);
+    }
+
+    // ========== Detail Panel ==========
+    function closeDetail() {
+        document.getElementById('detailPanel').classList.remove('show');
+        if (selectedNodeEl) selectedNodeEl.classList.remove('touch-hover');
+        selectedNodeEl = null;
+    }
+
+    function saveFromDetail() {
+        if (!selectedNodeEl) return;
+        const idx = parseInt(selectedNodeEl.dataset.ideaIndex);
+        if (idx >= 0 && idx < allIdeas.length) {
+            const idea = allIdeas[idx];
+            if (!savedIdeas.find(s => s.title === idea.title)) {
+                savedIdeas.push({ ...idea, savedAt: Date.now() });
+                localStorage.setItem('diverge_saved', JSON.stringify(savedIdeas));
+                renderSaved();
+                updateSavedCount();
+            }
+        }
+        closeDetail();
+    }
+
+    function diveFromDetail() {
+        if (!selectedNodeEl) return;
+        const idx = parseInt(selectedNodeEl.dataset.ideaIndex);
+        if (idx >= 0 && idx < allIdeas.length) {
+            document.getElementById('topicInput').value = allIdeas[idx].title;
+            closeDetail();
+            diverge();
+        }
+    }
+
+    // ========== Mode Selector ==========
+    document.querySelectorAll('.mode-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.mode-pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentMode = btn.dataset.mode;
+            if (currentTopic) diverge();
+        });
+    });
+
+    // ========== Input ==========
+    document.getElementById('topicInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') diverge();
+    });
+
+    // ========== Idea Generation ==========
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function generateIdeas(topic) {
+        const ideas = [];
+        const modes = currentMode === 'all'
+            ? ['reverse', 'random', 'scamper', 'cross', 'extreme', 'role']
+            : [currentMode];
+
+        if (modes.includes('reverse')) {
+            ideas.push(
+                { mode: 'reverse', title: `反${topic}的可能性`, desc: `如果完全相反地做会怎样？不追求"${topic}"的核心目标，而是拥抱它的反面——也许会发现全新的需求场景和用户群体。` },
+                { mode: 'reverse', title: `${topic}的最大失败`, desc: `刻意想想${topic}怎么才会彻底失败？找到最致命的失败路径，反过来看，这就是你最核心的护城河所在。` },
+                { mode: 'reverse', title: `谁最不需要${topic}`, desc: `找到最排斥${topic}的人群，研究他们为什么不需要。他们的拒绝理由，可能藏着被忽视的差异化机会。` },
+            );
+        }
+
+        if (modes.includes('random')) {
+            const w1 = pick(RANDOM_WORDS), w2 = pick(RANDOM_WORDS), w3 = pick(RANDOM_WORDS);
+            ideas.push(
+                { mode: 'random', title: `${topic}×${w1}`, desc: `"${topic}"和"${w1}"碰撞，会诞生什么？找出两者之间意想不到的联系。` },
+                { mode: 'random', title: `${topic}×${w2}`, desc: `把"${w2}"的特性注入"${topic}"——形态、功能、体验，哪些维度会被彻底改变？` },
+                { mode: 'random', title: `${topic}×${w3}`, desc: `用"${w3}"的隐喻重新理解"${topic}"，陌生化的视角往往催生最惊艳的创意。` },
+            );
+        }
+
+        if (modes.includes('scamper')) {
+            const letters = Object.keys(SCAMPER);
+            const picked = [];
+            while (picked.length < 3) { const l = pick(letters); if (!picked.includes(l)) picked.push(l); }
+            picked.forEach(l => {
+                ideas.push({ mode: 'scamper', title: `${l}-${SCAMPER[l].name}：${topic}`, desc: `${SCAMPER[l].q} 从${SCAMPER[l].name}的角度发现新的可能性。` });
+            });
+        }
+
+        if (modes.includes('cross')) {
+            const d1 = pick(CROSS_DOMAINS), d2 = pick(CROSS_DOMAINS), d3 = pick(CROSS_DOMAINS);
+            ideas.push(
+                { mode: 'cross', title: `${topic}×${d1}`, desc: `用${d1}的思维方式重新审视"${topic}"——有哪些经典模型可以迁移过来？` },
+                { mode: 'cross', title: `${topic}×${d2}`, desc: `如果${d2}的大师来做"${topic}"，他会怎么做？完全不同的专业直觉可能打破你的惯性。` },
+                { mode: 'cross', title: `${topic}×${d3}`, desc: `从${d3}的视角看"${topic}"，最显眼的问题是什么？最被忽视的机会又是什么？` },
+            );
+        }
+
+        if (modes.includes('extreme')) {
+            const s1 = pick(EXTREMES), s2 = pick(EXTREMES);
+            ideas.push(
+                { mode: 'extreme', title: s1, desc: `在极端约束下重新思考"${topic}"——限制反而逼出最有创意的解决方案。` },
+                { mode: 'extreme', title: s2, desc: `如果条件被推到极限，"${topic}"会怎样变形？极端假设能发现被舒适区掩盖的底层逻辑。` },
+            );
+        }
+
+        if (modes.includes('role')) {
+            const r1 = pick(ROLES), r2 = pick(ROLES);
+            ideas.push(
+                { mode: 'role', title: `${r1}做${topic}`, desc: `站在${r1}的立场重新审视"${topic}"——关心什么？忽略什么？换一双眼睛看同一个问题。` },
+                { mode: 'role', title: `${r2}评${topic}`, desc: `让${r2}来评判"${topic}"——会打几分？最大的槽点是什么？最惊喜的地方又是什么？` },
+            );
+        }
+
+        return ideas;
+    }
+
+    // ========== Main Action ==========
+    function diverge() {
+        const topic = document.getElementById('topicInput').value.trim();
+        if (!topic) { document.getElementById('topicInput').focus(); return; }
+
+        currentTopic = topic;
+        const ideas = generateIdeas(topic);
+        allIdeas = [...allIdeas, ...ideas];
+
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('statsFloat').style.display = 'flex';
+        document.getElementById('statN').textContent = allIdeas.length;
+        document.getElementById('statM').textContent = currentMode === 'all' ? 6 : 1;
+
+        buildGraph(topic, ideas);
+    }
+
+    function regenerate() {
+        if (currentTopic) {
+            allIdeas = [];
+            diverge();
+        }
+    }
+
+    // ========== Bomb ==========
+    function inspirationBomb() {
+        document.getElementById('topicInput').value = pick(BOMB_TOPICS);
+        allIdeas = [];
+        diverge();
+    }
+
+    // ========== Saved Panel ==========
+    function toggleSavedPanel() {
+        document.getElementById('savedPanel').classList.toggle('open');
+        document.getElementById('overlayBg').classList.toggle('show');
+    }
+
+    function renderSaved() {
+        const list = document.getElementById('savedList');
+        if (savedIdeas.length === 0) {
+            list.innerHTML = '<p style="color:var(--text-dim);text-align:center;padding:40px 0;">还没有收藏灵感哦～</p>';
+            return;
+        }
+        list.innerHTML = savedIdeas.map((idea, i) => {
+            const mc = MODE_COLORS[idea.mode] || MODE_COLORS.random;
+            return `
+                <div class="saved-item">
+                    <div class="saved-item-head">
+                        <span class="saved-item-tag" style="background:${mc.bg};color:${mc.text}">${MODE_LABELS[idea.mode] || idea.mode}</span>
+                        <button class="btn-rm" onclick="removeSaved(${i})">移除</button>
+                    </div>
+                    <div class="saved-item-title">${idea.title}</div>
+                    <div class="saved-item-desc">${idea.desc}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function removeSaved(i) {
+        savedIdeas.splice(i, 1);
+        localStorage.setItem('diverge_saved', JSON.stringify(savedIdeas));
+        renderSaved();
+        updateSavedCount();
+    }
+
+    function updateSavedCount() {
+        document.getElementById('savedCount').textContent = savedIdeas.length;
+    }
+
+    // ========== Export ==========
+    function exportIdeas() {
+        const data = savedIdeas.length > 0 ? savedIdeas : allIdeas;
+        if (data.length === 0) { alert('还没有灵感可以导出哦～'); return; }
+        let text = '# 灵感发散器 - 导出结果\n\n';
+        text += `主题：${currentTopic || '灵感炸弹'}\n`;
+        text += `时间：${new Date().toLocaleString()}\n`;
+        text += `数量：${data.length}\n\n---\n\n`;
+        data.forEach((idea, i) => {
+            text += `### ${i+1}. [${MODE_LABELS[idea.mode] || idea.mode}] ${idea.title}\n\n${idea.desc}\n\n`;
+        });
+        const blob = new Blob([text], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `灵感发散_${currentTopic || '导出'}_${new Date().toLocaleDateString().replace(/\//g,'-')}.md`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // ========== Init ==========
+    renderSaved();
+    updateSavedCount();
+    centerView();
+    </script>
+</body>
+</html>
