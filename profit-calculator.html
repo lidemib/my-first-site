@@ -303,6 +303,11 @@
             font-size: 14px;
         }
     </style>
+
+<style>
+  body { padding-bottom: 85px !important; }
+  @media(min-width:768px){ body { padding-bottom: 0 !important; } }
+</style>
 </head>
 <body>
     <div class="container">
@@ -702,5 +707,26 @@
             calculate();
         };
     </script>
+
+<!-- 转化浮窗 start -->
+<div id="leadHook" style="position:fixed;bottom:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;box-shadow:0 -4px 20px rgba(0,0,0,0.4);font-family:'PingFang SC','Microsoft YaHei',sans-serif;">
+  <div style="flex:1;min-width:180px;">
+    <div style="font-size:13px;opacity:0.9;margin-bottom:2px;">🎁 免费领资料</div>
+    <div style="font-size:15px;font-weight:700;">《餐饮加盟避坑checklist》</div>
+    <div style="font-size:11px;opacity:0.8;">加微信即送 · 可打印A4</div>
+  </div>
+  <div style="background:rgba(255,255,255,0.18);border-radius:8px;padding:5px 10px;text-align:center;flex-shrink:0;">
+    <div style="font-size:10px;opacity:0.8;">微信号</div>
+    <div style="font-size:15px;font-weight:700;letter-spacing:1px;">nasanren</div>
+  </div>
+  <button onclick="document.getElementById('leadHook').style.display='none'" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;opacity:0.7;flex-shrink:0;line-height:1;padding:0 2px;">×</button>
+</div>
+<style>
+  @media(min-width:768px){
+    #leadHook{left:auto;right:20px;bottom:20px;max-width:360px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.5);}
+  }
+</style>
+<!-- 转化浮窗 end -->
+
 </body>
 </html>

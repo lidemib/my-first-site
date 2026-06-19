@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>餐饮加盟避坑checklist | 阿迪哥的餐饮笔记</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: #f5f6fa;
+            color: #333;
+            line-height: 1.8;
+        }
+        .container { max-width: 800px; margin:0 auto; padding:20px; }
+        header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 30px;
+        }
+        header h1 { font-size: 1.8em; margin-bottom: 10px; }
+        header p { opacity:0.9; font-size:1em; }
+
+        .checklist-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .checklist-card h2 {
+            font-size: 1.2em;
+            color: #e74c3c;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f9f9f9;
+        }
+        .check-item:last-child { border-bottom: none; }
+        .check-box {
+            width: 22px; height: 22px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+        .check-text { flex:1; font-size:0.95em; }
+        .check-text strong { color: #e74c3c; }
+
+        .wechat-card {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .wechat-card h3 { font-size: 1.3em; margin-bottom: 10px; }
+        .wechat-id-box {
+            background: rgba(255,255,255,0.2);
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 10px 0;
+            font-size: 1.3em;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        .print-btn {
+            background: white;
+            color: #27ae60;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .tip-box {
+            background: #fff9e6;
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-size: 0.9em;
+        }
+        footer a { color: #e74c3c; text-decoration: none; }
+
+        @media print {
+            header { background: #e74c3c !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .wechat-card { background: #27ae60 !important; -webkit-print-color-adjust: exact; }
+            .print-btn { display: none; }
+            .check-box { border-color: #999 !important; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>📋 餐饮加盟避坑 Checklist</h1>
+    <p>9年袁记老加盟商精心整理 · 打印出来逐项核对</p>
+</header>
+
+<div class="container">
+
+    <div class="wechat-card">
+        <h3>📱 想要可打印PDF版本？</h3>
+        <p>加阿迪哥微信，领完整版（含空白填写区）</p>
+        <div class="wechat-id-box">nasanren</div>
+        <p style="font-size:0.9em;opacity:0.9;margin-top:8px;">加好友请备注：加盟咨询</p>
+        <button class="print-btn" onclick="window.print()">🖨️ 直接打印本页</button>
+    </div>
+
+    <!-- 第一部分：品牌方背景调查 -->
+    <div class="checklist-card">
+        <h2>✅ 一、品牌方背景调查（必须完成）</h2>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">直营店数量 ≥ 5家，且经营时间 ≥ 3年 <strong>（不满足直接Pass）</strong></div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">在"国家企业信用信息公示系统"查询品牌方公司，确认无异常经营记录</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">在"中国裁判文书网"搜索品牌方，确认无大量加盟纠纷诉讼</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">在大众点评/美团搜索该品牌，看真实门店数量和评价</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">百度/知乎搜索"XX品牌 坑/骗局/投诉"，看有无负面</div></div>
+    </div>
+
+    <!-- 第二部分：私下找加盟商核实 -->
+    <div class="checklist-card">
+        <h2>✅ 二、私下找加盟商核实（至少找3个）</h2>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">在美团上随机找3-5家该品牌门店，私下加老板微信聊</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">问：真实投资额是多少？（对比品牌方报价）</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">问：现在每月净利润大概多少？</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">问：如果重新选择，还会不会加盟这个品牌？</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">问：品牌方承诺的支持（培训/选址/营销）有没有到位？</div></div>
+        <div class="tip-box">💡 <strong>阿迪哥提示：</strong>品牌方带你去参观的"样板店"都是精心挑选的，不代表真实情况。一定要自己随机找店家聊。</div>
+    </div>
+
+    <!-- 第三部分：合同风险筛查 -->
+    <div class="checklist-card">
+        <h2>✅ 三、合同风险筛查（38个风险点自查）</h2>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">加盟费金额、支付方式、是否可退 —— 白纸黑字写清楚</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">加盟期限 —— 建议3-5年，不要签10年以上</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">区域保护半径 —— 必须写明具体米数，不能模糊说"周边"</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">供应链条款 —— 是否强制从公司进货？价格是否高于市场价？</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">解约条件 —— 什么情况下可以解约？违约金多少？</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">竞业限制 —— 合同到期后能否做同类生意？</div></div>
+        <div class="tip-box">⚠️ <strong>高危信号：</strong>合同里写"最终解释权归公司所有"、"加盟费不予退还"、"必须100%从公司进货"——看到这些条款要特别小心！</div>
+        <div style="margin-top:15px;"><a href="contract-scanner.html" style="display:inline-block;background:#e74c3c;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;">📄 用合同扫描器自动检测风险 →</a></div>
+    </div>
+
+    <!-- 第四部分：算清楚账 -->
+    <div class="checklist-card">
+        <h2>✅ 四、算清楚账（用数据说话）</h2>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">品牌方说的"月赚X万"，按3折计算，看是否能接受</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">算出保本点：每月固定成本 ÷ 毛利率 = 需要卖多少</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">算回本周期：总投入 ÷ 月净利润 = 回本月数（>2年要谨慎）</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">算最差情况：如果连续3个月亏损，账上还有多少备用金？</div></div>
+        <div class="tip-box">💡 <strong>阿迪哥的经验：</strong>品牌方给你看的盈利模型，都是"理想情况"。真实情况是：房租比预算高20%、人工比预算高30%、营业额只有预算的60%。按这个打折扣再算一遍。</div>
+        <div style="margin-top:15px;"><a href="profit-calculator.html" style="display:inline-block;background:#667eea;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;">🧮 用盈亏计算器算一遍 →</a></div>
+    </div>
+
+    <!-- 第五部分：最后的决定 -->
+    <div class="checklist-card">
+        <h2>✅ 五、最后的决定（问自己3个问题）</h2>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">我能接受每天工作12小时以上、全年几乎无休吗？</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">我能接受投入的这笔钱全部亏完、一分不剩吗？</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">如果这笔钱亏了，会影响家庭正常生活吗？</div></div>
+        <div class="check-item"><div class="check-box"></div><div class="check-text">我有没有餐饮从业经验？如果没有，愿意先去打工3个月再决定吗？</div></div>
+        <div class="tip-box">🙏 <strong>阿迪哥的真心话：</strong>餐饮这个行业，74%的人是亏钱的。如果你抱着"轻松赚钱当老板"的心态来做，我劝你趁早打消念头。但如果你已经做好了最苦的准备，那餐饮确实是一个普通人能靠双手改变命运的行业。想清楚，再入行。</div>
+    </div>
+
+    <div class="wechat-card">
+        <h3>🤝 还有疑问？直接找我聊</h3>
+        <p>9年袁记经验，帮你避开90%的加盟坑</p>
+        <div class="wechat-id-box">nasanren</div>
+        <p style="font-size:0.9em;opacity:0.9;margin-top:8px;">微信备注"加盟咨询"，我看到会通过</p>
+    </div>
+
+</div>
+
+<footer>
+    <p>🥟 <a href="index.html">阿迪哥的餐饮笔记</a> · 9年袁记老加盟商</p>
+    <p style="margin-top:8px;">持续更新加盟避坑干货 · 关注不迷路</p>
+</footer>
+
+<!-- 转化浮窗 -->
+<div id="leadHook" style="position:fixed;bottom:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;box-shadow:0 -4px 20px rgba(0,0,0,0.4);font-family:'PingFang SC','Microsoft YaHei',sans-serif;">
+  <div style="flex:1;min-width:180px;">
+    <div style="font-size:13px;opacity:0.9;margin-bottom:2px;">🎁 免费领资料</div>
+    <div style="font-size:15px;font-weight:700;">《餐饮加盟避坑checklist》</div>
+    <div style="font-size:11px;opacity:0.8;">加微信即送 · 可打印A4</div>
+  </div>
+  <div style="background:rgba(255,255,255,0.18);border-radius:8px;padding:5px 10px;text-align:center;flex-shrink:0;">
+    <div style="font-size:10px;opacity:0.8;">微信号</div>
+    <div style="font-size:15px;font-weight:700;letter-spacing:1px;">nasanren</div>
+  </div>
+  <button onclick="document.getElementById('leadHook').style.display='none'" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;opacity:0.7;flex-shrink:0;line-height:1;padding:0 2px;">×</button>
+</div>
+<style>
+  @media(min-width:768px){
+    #leadHook{left:auto;right:20px;bottom:20px;max-width:360px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.5);}
+    body { padding-bottom: 0 !important; }
+  }
+  body { padding-bottom: 85px !important; }
+</style>
+
+</body>
+</html>
