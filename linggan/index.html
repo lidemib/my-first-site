@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>灵感发散器</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    :root {
+      --primary: #FF6B35;
+      --primary-light: #FF8C5A;
+      --secondary: #FFB347;
+      --bg: #FFF8F0;
+      --card-bg: #FFFFFF;
+      --text: #333333;
+      --text-light: #666666;
+      --border: #FFE4D4;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      max-width: 480px;
+      margin: 0 auto;
+      overflow-x: hidden;
+    }
+    
+    .container {
+      position: relative;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+    
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-back {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .header-back:active {
+      background: rgba(255,255,255,0.3);
+    }
+    
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .breadcrumb {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+    
+    /* Views */
+    .view {
+      display: none;
+      padding: 20px;
+      animation: slideIn 0.3s ease;
+    }
+    
+    .view.active {
+      display: block;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    /* Home View */
+    .home-title {
+      text-align: center;
+      margin: 40px 0 20px;
+    }
+    
+    .home-title h2 {
+      font-size: 28px;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+    
+    .home-title p {
+      color: var(--text-light);
+      font-size: 14px;
+    }
+    
+    .emoji-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+    
+    /* Scene Grid */
+    .scene-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    .scene-btn {
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 30px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .scene-btn:active {
+      transform: scale(0.96);
+      border-color: var(--primary);
+      background: #FFF5EE;
+    }
+    
+    .scene-btn .emoji {
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+    
+    .scene-btn .text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    
+    /* Category Grid */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    
+    .category-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+    }
+    
+    .category-card:active {
+      transform: scale(0.96);
+      border-color: var(--primary);
+    }
+    
+    .category-card .emoji {
+      font-size: 32px;
+      margin-bottom: 6px;
+    }
+    
+    .category-card .name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    
+    /* Subcategory List */
+    .subcategory-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .subcategory-item {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .subcategory-item:active {
+      background: #FFF5EE;
+      border-color: var(--primary);
+    }
+    
+    .subcategory-item .name {
+      font-size: 15px;
+      font-weight: 500;
+    }
+    
+    .subcategory-item .arrow {
+      color: var(--text-light);
+      font-size: 14px;
+    }
+    
+    /* Store List */
+    .store-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .store-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 18px;
+      border: 1px solid var(--border);
+    }
+    
+    .store-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    
+    .store-logo {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    
+    .store-info {
+      flex: 1;
+    }
+    
+    .store-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .store-address {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+    
+    .store-distance {
+      font-size: 12px;
+      color: var(--primary);
+      font-weight: 500;
+    }
+    
+    .store-tags {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    
+    .store-tag {
+      background: #FFF0E6;
+      color: var(--primary);
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    
+    .coupon-info {
+      background: linear-gradient(135deg, #FFF5EE 0%, #FFE4D4 100%);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .coupon-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .coupon-icon {
+      font-size: 24px;
+    }
+    
+    .coupon-text {
+      font-size: 13px;
+    }
+    
+    .coupon-text .price {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .coupon-text .desc {
+      color: var(--text-light);
+      font-size: 11px;
+    }
+    
+    .claim-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .claim-btn:active {
+      background: var(--primary-light);
+    }
+    
+    .claim-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .no-store {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-light);
+    }
+    
+    .no-store .emoji {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+    
+    .no-store .text {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    
+    /* Coupon View */
+    .coupon-view {
+      padding: 20px;
+    }
+    
+    .coupon-card {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: 20px;
+      padding: 30px;
+      color: white;
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .coupon-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    }
+    
+    .coupon-store {
+      font-size: 16px;
+      opacity: 0.9;
+      margin-bottom: 15px;
+      position: relative;
+    }
+    
+    .coupon-price {
+      font-size: 56px;
+      font-weight: 800;
+      margin-bottom: 5px;
+      position: relative;
+    }
+    
+    .coupon-price span {
+      font-size: 24px;
+    }
+    
+    .coupon-label {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 25px;
+      position: relative;
+    }
+    
+    .coupon-code-box {
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      position: relative;
+    }
+    
+    .coupon-code-label {
+      font-size: 11px;
+      opacity: 0.8;
+      margin-bottom: 5px;
+    }
+    
+    .coupon-code {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      font-family: monospace;
+    }
+    
+    .coupon-valid {
+      font-size: 12px;
+      opacity: 0.8;
+      position: relative;
+    }
+    
+    .coupon-detail {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+    
+    .coupon-detail-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+    
+    .coupon-detail-text {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    
+    .coupon-action-btn {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    
+    .coupon-action-btn:active {
+      background: var(--primary-light);
+    }
+    
+    .coupon-tip {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+    
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 340px;
+      text-align: center;
+      animation: modalIn 0.3s ease;
+    }
+    
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .modal-icon {
+      font-size: 60px;
+      margin-bottom: 15px;
+    }
+    
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--primary);
+    }
+    
+    .modal-text {
+      font-size: 14px;
+      color: var(--text-light);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    
+    .modal-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .modal-btn:active {
+      background: var(--primary-light);
+    }
+    
+    /* Footer */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      background: white;
+      border-top: 1px solid var(--border);
+      padding: 12px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-light);
+    }
+    
+    /* Address Modal */
+    .address-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    
+    .address-modal.active {
+      display: flex;
+    }
+    
+    .address-content {
+      background: white;
+      border-radius: 20px 20px 0 0;
+      padding: 30px;
+      width: 100%;
+      max-width: 480px;
+      animation: slideUp 0.3s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+    
+    .address-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    .address-item {
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+    
+    .address-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .address-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .address-text {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+    
+    .address-close {
+      width: 100%;
+      background: #f5f5f5;
+      color: var(--text);
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header" id="header">
+      <button class="header-back" id="backBtn" style="display:none;">←</button>
+      <h1 id="headerTitle">灵感发散器</h1>
+      <div class="breadcrumb" id="breadcrumb" style="display:none;"></div>
+    </div>
+
+    <!-- View 1: Home -->
+    <div class="view active" id="view1">
+      <div class="home-title">
+        <div class="emoji-icon">💡</div>
+        <h2>灵感发散器</h2>
+        <p>不知道吃什么？让灵感发散一下</p>
+      </div>
+      <div class="scene-grid">
+        <div class="scene-btn" data-scene="早餐">
+          <div class="emoji">🌅</div>
+          <div class="text">早餐</div>
+        </div>
+        <div class="scene-btn" data-scene="午餐">
+          <div class="emoji">☀️</div>
+          <div class="text">午餐</div>
+        </div>
+        <div class="scene-btn" data-scene="晚餐">
+          <div class="emoji">🌙</div>
+          <div class="text">晚餐</div>
+        </div>
+        <div class="scene-btn" data-scene="夜宵">
+          <div class="emoji">🌃</div>
+          <div class="text">夜宵</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- View 2: Category -->
+    <div class="view" id="view2">
+      <div class="category-grid" id="categoryGrid"></div>
+    </div>
+
+    <!-- View 3: Subcategory -->
+    <div class="view" id="view3">
+      <div class="subcategory-list" id="subcategoryList"></div>
+    </div>
+
+    <!-- View 4: Store List -->
+    <div class="view" id="view4">
+      <div id="storeList"></div>
+    </div>
+
+    <!-- View 5: Coupon -->
+    <div class="view" id="view5">
+      <div class="coupon-view" id="couponView"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    灵感发散器 v1.0 | 让选择变简单
+  </div>
+
+  <!-- Welcome Modal -->
+  <div class="modal" id="welcomeModal">
+    <div class="modal-content">
+      <div class="modal-icon">🍜</div>
+      <div class="modal-title">欢迎使用灵感发散器</div>
+      <div class="modal-text">
+        不知道吃什么？<br>
+        从场景开始，一步步发散，找到你的菜！
+      </div>
+      <button class="modal-btn" id="startBtn">开始探索</button>
+    </div>
+  </div>
+
+  <!-- Address Modal -->
+  <div class="address-modal" id="addressModal">
+    <div class="address-content">
+      <div class="address-title">🏪 门店地址</div>
+      <div id="addressList"></div>
+      <button class="address-close" id="closeAddress">关闭</button>
+    </div>
+  </div>
+
+  <script>
+    // Data
+    const categories = [
+      { name: '面食', emoji: '🍜', subcategories: ['饺子', '西北面', '云吞面', '螺蛳粉', '拉面', '米粉', '刀削面'] },
+      { name: '中餐', emoji: '🥢', subcategories: ['川菜', '粤菜', '湘菜', '东北菜', '家常菜', '火锅'] },
+      { name: '西餐', emoji: '🍽️', subcategories: ['汉堡', '披萨', '牛排', '意面', '三明治'] },
+      { name: '自助餐', emoji: '🍴', subcategories: ['海鲜自助', '烤肉自助', '甜品自助', '火锅自助'] },
+      { name: '快餐', emoji: '🍔', subcategories: ['盖饭', '炒饭', '拌饭', '套餐'] },
+      { name: '小吃', emoji: '🍢', subcategories: ['炸串', '烧烤', '卤味', '煎饼', '肠粉'] },
+      { name: '饮品', emoji: '🧃', subcategories: ['奶茶', '咖啡', '果汁', '茶饮'] }
+    ];
+
+    const stores = [
+      {
+        name: '袁记云饺（幸福市场店）',
+        address: '佛山市顺德区幸福市场',
+        distance: '约500m',
+        tags: ['现包现煮', '手工地道'],
+        coupon: '5元无门槛优惠券',
+        price: 5
+      },
+      {
+        name: '袁记云饺（华丰市场店）',
+        address: '佛山市顺德区华丰市场',
+        distance: '约800m',
+        tags: ['现包现煮', '手工地道'],
+        coupon: '5元无门槛优惠券',
+        price: 5
+      }
+    ];
+
+    // State
+    let currentScene = '';
+    let currentCategory = '';
+    let currentSubcategory = '';
+    let currentStore = null;
+
+    // Utils
+    function generateCouponCode() {
+      const date = new Date();
+      const dateStr = `${date.getFullYear()}${String(date.getMonth()+1).padStart(2,'0')}${String(date.getDate()).padStart(2,'0')}`;
+      const random = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
+      return `LG${dateStr}${random}`;
+    }
+
+    function getClaimedCoupons() {
+      const claimed = localStorage.getItem('claimedCoupons');
+      return claimed ? JSON.parse(claimed) : {};
+    }
+
+    function saveClaimedCoupon(storeName, code) {
+      const claimed = getClaimedCoupons();
+      claimed[storeName] = { code, time: Date.now() };
+      localStorage.setItem('claimedCoupons', JSON.stringify(claimed));
+    }
+
+    function isClaimed(storeName) {
+      const claimed = getClaimedCoupons();
+      return !!claimed[storeName];
+    }
+
+    // View Navigation
+    function showView(viewNum) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById(`view${viewNum}`).classList.add('active');
+      
+      const backBtn = document.getElementById('backBtn');
+      const breadcrumb = document.getElementById('breadcrumb');
+      
+      if (viewNum === 1) {
+        backBtn.style.display = 'none';
+        breadcrumb.style.display = 'none';
+        document.getElementById('headerTitle').textContent = '灵感发散器';
+      } else {
+        backBtn.style.display = 'flex';
+        breadcrumb.style.display = 'block';
+      }
+    }
+
+    function updateBreadcrumb() {
+      const parts = [currentScene];
+      if (currentCategory) parts.push(currentCategory);
+      if (currentSubcategory) parts.push(currentSubcategory);
+      document.getElementById('breadcrumb').textContent = parts.join(' > ');
+    }
+
+    // Render Category Grid
+    function renderCategories() {
+      const grid = document.getElementById('categoryGrid');
+      grid.innerHTML = categories.map(cat => `
+        <div class="category-card" data-category="${cat.name}">
+          <div class="emoji">${cat.emoji}</div>
+          <div class="name">${cat.name}</div>
+        </div>
+      `).join('');
+    }
+
+    // Render Subcategory List
+    function renderSubcategories() {
+      const list = document.getElementById('subcategoryList');
+      const cat = categories.find(c => c.name === currentCategory);
+      if (!cat) return;
+      
+      list.innerHTML = cat.subcategories.map(sub => `
+        <div class="subcategory-item" data-subcategory="${sub}">
+          <div class="name">${sub}</div>
+          <div class="arrow">›</div>
+        </div>
+      `).join('');
+    }
+
+    // Render Store List
+    function renderStores() {
+      const list = document.getElementById('storeList');
+      
+      if (currentSubcategory !== '饺子') {
+        list.innerHTML = `
+          <div class="no-store">
+            <div class="emoji">🚧</div>
+            <div class="text">
+              暂无商家入驻，敬请期待 😊<br><br>
+              <span style="font-size:12px;color:#999;">如果这是您的店铺，欢迎加入我们！</span>
+            </div>
+          </div>
+        `;
+        return;
+      }
+      
+      const claimed = getClaimedCoupons();
+      list.innerHTML = stores.map(store => {
+        const claimedStore = claimed[store.name];
+        return `
+          <div class="store-card">
+            <div class="store-header">
+              <div class="store-logo">🥟</div>
+              <div class="store-info">
+                <div class="store-name">${store.name}</div>
+                <div class="store-address">${store.address}</div>
+              </div>
+              <div class="store-distance">${store.distance}</div>
+            </div>
+            <div class="store-tags">
+              ${store.tags.map(t => `<span class="store-tag">${t}</span>`).join('')}
+            </div>
+            <div class="coupon-info">
+              <div class="coupon-left">
+                <div class="coupon-icon">🎫</div>
+                <div class="coupon-text">
+                  <div class="price">${store.coupon}</div>
+                </div>
+              </div>
+              <button class="claim-btn ${claimedStore ? 'disabled' : ''}" 
+                      data-store="${store.name}"
+                      ${claimedStore ? 'disabled' : ''}>
+                ${claimedStore ? '已领取' : '领取优惠券'}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Render Coupon
+    function renderCoupon(storeName) {
+      const store = stores.find(s => s.name === storeName);
+      if (!store) return;
+      
+      const claimed = getClaimedCoupons();
+      const couponData = claimed[storeName];
+      
+      const view = document.getElementById('couponView');
+      view.innerHTML = `
+        <div class="coupon-card">
+          <div class="coupon-store">${store.name}</div>
+          <div class="coupon-price"><span>¥</span>${store.price}</div>
+          <div class="coupon-label">无门槛优惠券</div>
+          <div class="coupon-code-box">
+            <div class="coupon-code-label">优惠码</div>
+            <div class="coupon-code">${couponData.code}</div>
+          </div>
+          <div class="coupon-valid">有效期至 2026年6月30日</div>
+        </div>
+        
+        <div class="coupon-detail">
+          <div class="coupon-detail-title">📋 使用说明</div>
+          <div class="coupon-detail-text">
+            到店出示此页面，商家核销即可抵扣<br>
+            每人限用一张，不可叠加使用
+          </div>
+        </div>
+        
+        <button class="coupon-action-btn" id="showAddressBtn">去吃饺子！</button>
+        
+        <div class="coupon-tip">
+          📸 截图保存此页面，到店出示即可使用
+        </div>
+      `;
+      
+      // Show address modal
+      document.getElementById('showAddressBtn').onclick = function() {
+        showAddressModal();
+      };
+    }
+
+    function showAddressModal() {
+      const list = document.getElementById('addressList');
+      list.innerHTML = stores.map(s => `
+        <div class="address-item">
+          <div class="address-name">${s.name}</div>
+          <div class="address-text">📍 ${s.address}</div>
+        </div>
+      `).join('');
+      document.getElementById('addressModal').classList.add('active');
+    }
+
+    // Event Listeners
+    document.getElementById('backBtn').onclick = function() {
+      const activeView = document.querySelector('.view.active');
+      const viewId = activeView.id;
+      
+      if (viewId === 'view5') {
+        // Back to store list
+        showView(4);
+        updateBreadcrumb();
+      } else if (viewId === 'view4') {
+        currentSubcategory = '';
+        showView(3);
+        updateBreadcrumb();
+      } else if (viewId === 'view3') {
+        currentCategory = '';
+        currentSubcategory = '';
+        showView(2);
+        updateBreadcrumb();
+      } else if (viewId === 'view2') {
+        currentScene = '';
+        currentCategory = '';
+        currentSubcategory = '';
+        showView(1);
+        updateBreadcrumb();
+      }
+    };
+
+    // Scene buttons
+    document.querySelectorAll('.scene-btn').forEach(btn => {
+      btn.onclick = function() {
+        currentScene = this.dataset.scene;
+        document.getElementById('headerTitle').textContent = currentScene;
+        renderCategories();
+        showView(2);
+        updateBreadcrumb();
+        console.log('Access:', { scene: currentScene, timestamp: Date.now() });
+      };
+    });
+
+    // Category cards
+    document.getElementById('categoryGrid').onclick = function(e) {
+      const card = e.target.closest('.category-card');
+      if (card) {
+        currentCategory = card.dataset.category;
+        renderSubcategories();
+        showView(3);
+        updateBreadcrumb();
+        console.log('Access:', { scene: currentScene, category: currentCategory, timestamp: Date.now() });
+      }
+    };
+
+    // Subcategory items
+    document.getElementById('subcategoryList').onclick = function(e) {
+      const item = e.target.closest('.subcategory-item');
+      if (item) {
+        currentSubcategory = item.dataset.subcategory;
+        renderStores();
+        showView(4);
+        updateBreadcrumb();
+        console.log('Access:', { scene: currentScene, category: currentCategory, subcategory: currentSubcategory, timestamp: Date.now() });
+      }
+    };
+
+    // Claim buttons
+    document.getElementById('storeList').onclick = function(e) {
+      const btn = e.target.closest('.claim-btn');
+      if (btn && !btn.disabled) {
+        const storeName = btn.dataset.store;
+        const code = generateCouponCode();
+        saveClaimedCoupon(storeName, code);
+        currentStore = storeName;
+        renderStores();
+        renderCoupon(storeName);
+        showView(5);
+        updateBreadcrumb();
+        console.log('Coupon claimed:', { store: storeName, code: code, timestamp: Date.now() });
+      }
+    };
+
+    // Welcome Modal
+    if (!localStorage.getItem('visited')) {
+      document.getElementById('welcomeModal').classList.add('active');
+    }
+
+    document.getElementById('startBtn').onclick = function() {
+      localStorage.setItem('visited', 'true');
+      document.getElementById('welcomeModal').classList.remove('active');
+    };
+
+    // Address Modal
+    document.getElementById('closeAddress').onclick = function() {
+      document.getElementById('addressModal').classList.remove('active');
+    };
+
+    document.getElementById('addressModal').onclick = function(e) {
+      if (e.target === this) {
+        this.classList.remove('active');
+      }
+    };
+
+    // Init
+    renderCategories();
+    console.log('灵感发散器 v1.0 已加载');
+  </script>
+</body>
+</html>
