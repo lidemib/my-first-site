@@ -288,6 +288,7 @@
       display: flex;
       gap: 6px;
       margin-bottom: 12px;
+      flex-wrap: wrap;
     }
     
     .store-tag {
@@ -296,6 +297,13 @@
       font-size: 11px;
       padding: 4px 8px;
       border-radius: 4px;
+    }
+    
+    .store-desc {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 12px;
+      line-height: 1.4;
     }
     
     .coupon-info {
@@ -943,7 +951,7 @@
 
   <!-- Footer -->
   <div class="footer">
-    灵感发散器 v1.1 | 让选择变简单
+    灵感发散器 v1.2 | 让选择变简单
   </div>
 
   <!-- Welcome Modal -->
@@ -992,11 +1000,13 @@
     ];
 
     const stores = [
+      // ===== 饺子类（保留原有袁记云饺，带优惠券）=====
       {
         name: '袁记云饺（幸福市场店）',
         address: '佛山市顺德区幸福市场',
         distance: '约500m',
         tags: ['现包现煮', '手工地道'],
+        desc: '皮薄馅大的手工云饺，街坊邻居吃了都说好',
         coupon: '5元无门槛优惠券',
         price: 5
       },
@@ -1005,8 +1015,445 @@
         address: '佛山市顺德区华丰市场',
         distance: '约800m',
         tags: ['现包现煮', '手工地道'],
+        desc: '新鲜食材现场包制，宵夜好选择',
         coupon: '5元无门槛优惠券',
         price: 5
+      },
+      
+      // ===== 云吞面类 =====
+      {
+        name: '冯不记面家（华盖路店）',
+        address: '顺德区大良华盖路民信牛奶店隔壁',
+        distance: '约1.2km',
+        tags: ['百年老店', '竹升面', '鱼皮角'],
+        desc: '百年传承老字号，顺德人记忆中的云吞面味道'
+      },
+      {
+        name: '建国麺店',
+        address: '顺德区大良碧鉴路22号（近凤城酒店）',
+        distance: '约900m',
+        tags: ['老字号', '牛腩面', '广式竹升面'],
+        desc: '开在凤城酒店旁几十年的老店，街坊生意，味道正'
+      },
+      {
+        name: '财记麺家',
+        address: '顺德区大良津宁巷9号',
+        distance: '约1.5km',
+        tags: ['老店', '云吞面', '牛腩河粉'],
+        desc: '非常有历史的老店，12元一碗牛腩云吞面超实惠'
+      },
+      {
+        name: '胡洪面馆',
+        address: '顺德区容桂顺成西路11号',
+        distance: '约3km',
+        tags: ['老字号', '1989年开业', '复古风'],
+        desc: '容桂1989年开业的老字号，手工牛腩云吞面传承多年'
+      },
+      {
+        name: '七姐面店',
+        address: '顺德区容桂工业路101号（近容桂文化宫）',
+        distance: '约2.8km',
+        tags: ['20年老店', '云吞面', '街坊店'],
+        desc: '附近街坊从小吃到大的面馆，10元云吞面足足13颗云吞'
+      },
+      {
+        name: '友叔面店',
+        address: '顺德区容桂工业路文东街6号',
+        distance: '约2.5km',
+        tags: ['1979年老店', '手打竹升面'],
+        desc: '从1979年开店至今，友叔亲手做的面条弹牙有劲'
+      },
+      {
+        name: '欢记牛乳',
+        address: '顺德区大良金榜上街19号',
+        distance: '约1.8km',
+        tags: ['水牛奶', '老字号', '双皮奶'],
+        desc: '大良金榜街必打卡小店，水牛奶制品正宗'
+      },
+      
+      // ===== 肠粉类 =====
+      {
+        name: '萧婆肠粉',
+        address: '顺德区容桂工业路63号',
+        distance: '约2.6km',
+        tags: ['老字号', '抽屉式肠粉', '高性价比'],
+        desc: '顺德最出名的肠粉店之一，牛肉肠粉加蛋只要个位数'
+      },
+      {
+        name: '留一手肠粉店（锦龙店）',
+        address: '顺德区大良锦龙路32-33号',
+        distance: '约1.3km',
+        tags: ['1996年老店', '石磨肠粉'],
+        desc: '创始于1996年，石磨米浆即磨即制，肠粉皮薄味鲜'
+      },
+      {
+        name: '大围公早餐',
+        address: '顺德区大良',
+        distance: '约2km',
+        tags: ['街坊店', '肠粉', '生滚粥'],
+        desc: '藏在别人家院子的早餐店，本地人的私藏早餐点'
+      },
+      {
+        name: '华叔茶记',
+        address: '顺德区容桂南约大街15号',
+        distance: '约2.9km',
+        tags: ['茶餐厅', '猪肠粉', '丝袜奶茶'],
+        desc: '容桂老式茶记，华叔四喜猪肠粉配丝袜奶茶很搭'
+      },
+      {
+        name: '品上味肠粉（容桂书院路店）',
+        address: '顺德区容桂书院路丽景苑A座',
+        distance: '约3.2km',
+        tags: ['肠粉', '炖汤', '蒸饭'],
+        desc: '容桂街坊肠粉店，还提供多种滋补炖汤和蒸饭'
+      },
+      {
+        name: '甲子路肠粉老店',
+        address: '顺德区大良甲子路',
+        distance: '约1.6km',
+        tags: ['30年老店', '石磨肠粉'],
+        desc: '低调开了三十多年的老店，牛肉肠加了陈皮碎很香'
+      },
+      
+      // ===== 粤菜/顺德菜类 =====
+      {
+        name: '大良毋米粥（锦龙路总店）',
+        address: '顺德区大良锦龙路270号',
+        distance: '约1.4km',
+        tags: ['非遗技艺', '粥水火锅', '顺德菜'],
+        desc: '顺德非遗粥水火锅，有米不见米只取米精华'
+      },
+      {
+        name: '顺德渔村·传承一方真味（华侨城店）',
+        address: '顺德区大良华侨城',
+        distance: '约2.5km',
+        tags: ['顺德菜', '招牌鲫鱼羹', '脆皮叉烧'],
+        desc: '招牌鲫鱼羹鲜美无比，薄荷酱煎罗氏虾很有特色'
+      },
+      {
+        name: '猪肉婆私房菜（容桂总店）',
+        address: '顺德区容桂',
+        distance: '约3.5km',
+        tags: ['私房菜', '老字号', '青砖大屋'],
+        desc: '青砖白瓦传统顺德味，猪肉婆让世界了解顺德'
+      },
+      {
+        name: '聚福山莊',
+        address: '顺德区勒流',
+        distance: '约5km',
+        tags: ['顺德菜', '宴请', '点心'],
+        desc: '勒流知名顺德菜餐厅，菜品丰富适合聚餐'
+      },
+      {
+        name: '捞德顺鱼生专门店（欢乐海岸店）',
+        address: '顺德区大良欢乐海岸',
+        distance: '约3km',
+        tags: ['鱼生', '顺德菜', '桑拿鸡'],
+        desc: '顺德鱼生标准示范店，一口鱼生、凤城四杯鸡必点'
+      },
+      {
+        name: '珍之宝酒楼（伦教总店）',
+        address: '顺德区伦教',
+        distance: '约6km',
+        tags: ['粤菜', '新式点心', '婚宴'],
+        desc: '伦教美食地标，脆皮伦教糕、金箔黑珍珠蛋挞超有颜值'
+      },
+      {
+        name: '东逸湾酒店',
+        address: '顺德区容桂小黄圃外环路38号',
+        distance: '约4.5km',
+        tags: ['中华餐饮名店', '鱼生', '园林式'],
+        desc: '容桂中华餐饮名店，海鲈鱼生配柠檬叶丝，口口鲜甜'
+      },
+      {
+        name: '东海一族鱼翅海鲜酒楼',
+        address: '顺德区容桂港前路5号',
+        distance: '约4km',
+        tags: ['1996年老店', '鱼翅', '海鲜'],
+        desc: '1996年开业的老牌酒楼，烹制鱼翅鲍鱼海鲜出名'
+      },
+      {
+        name: '顺德人家',
+        address: '顺德区大良',
+        distance: '约2km',
+        tags: ['顺德菜', '早茶', '聚餐'],
+        desc: '综合型顺德菜餐厅，粤菜和茶点都不错，婚宴常选'
+      },
+      {
+        name: '味可道',
+        address: '顺德区大良',
+        distance: '约1.8km',
+        tags: ['顺德菜', '菊花拆鱼羹', '盐水鸡'],
+        desc: '菊花拆鱼羹、辽参炆猪手，经典顺德风味'
+      },
+      {
+        name: '满登登',
+        address: '顺德区容桂',
+        distance: '约3.3km',
+        tags: ['煲仔饭', '黄鳝饭', '高性价比'],
+        desc: '黄鳝煲仔饭分量超足，69元吃到扶墙出'
+      },
+      
+      // ===== 火锅/粥底类 =====
+      {
+        name: '杏坛公平靓正（大良店）',
+        address: '顺德区大良延年路延年食街',
+        distance: '约2.2km',
+        tags: ['粥底火锅', '牛花粥', '平靓正'],
+        desc: '牛花粥必点，半斤牛五花送粥底，蛋液拌牛肉超嫩'
+      },
+      {
+        name: '松记餐厅',
+        address: '顺德区容桂合祥路3号',
+        distance: '约3.8km',
+        tags: ['30年老店', '清水打边炉', '必吃榜'],
+        desc: '三十余年历史的老字号，清水打边炉忠于食材原味'
+      },
+      {
+        name: '太艮堡毋米粥（嘉信店）',
+        address: '顺德区大良兴顺路4号嘉信城市广场',
+        distance: '约1.5km',
+        tags: ['非遗粥底', '顺德菜', '连锁'],
+        desc: '非遗技艺传承，顺德必吃粥水火锅品牌'
+      },
+      {
+        name: '山泉粥·粥底火锅（桂畔里店）',
+        address: '顺德区大良云景路3号桂畔里',
+        distance: '约2.8km',
+        tags: ['粥底火锅', '桑拿鸡', '吊水无骨鱼'],
+        desc: '本地人常去，桑拿鸡套餐鸡肉嫩滑，粥底鲜甜'
+      },
+      {
+        name: '顺德粥家庄',
+        address: '顺德区大良',
+        distance: '约2km',
+        tags: ['老牌粥底', '社区店', '性价比'],
+        desc: '本地老牌粥水火锅，保留传统做法，粥底绵稠浓郁'
+      },
+      {
+        name: '松记食店（容桂总店）',
+        address: '顺德区容桂合祥路3号',
+        distance: '约3.8km',
+        tags: ['清水火锅', '猪杂', '手打丸子'],
+        desc: '招牌猪肝、竹肠必点，手打丸子韧劲十足'
+      },
+      
+      // ===== 煲仔饭/快餐类 =====
+      {
+        name: '梁氏骅晟煲仔饭（太艮路总店）',
+        address: '顺德区大良太艮路景鸿楼',
+        distance: '约1.6km',
+        tags: ['传统顺德菜', '煲仔饭', '瓦煲'],
+        desc: '从瓦煲选米调味都有讲究，腊味煲仔饭经典'
+      },
+      {
+        name: '沙煲兄弟',
+        address: '顺德区大良聚源直街59号',
+        distance: '约1.7km',
+        tags: ['煲仔饭', '腊味', '黄鳝'],
+        desc: '大良街坊煲仔饭，分量足味道好，性价比高'
+      },
+      {
+        name: '探记煲仔饭',
+        address: '顺德区大良华盖里四巷26号',
+        distance: '约1.4km',
+        tags: ['老顺德风情', '腊味', '锅巴'],
+        desc: '用岭南镬耳墙还原老顺德风情，锅巴焦香酥脆'
+      },
+      {
+        name: '御煌金牌煲仔饭（清晖园店）',
+        address: '顺德区大良清晖路33号',
+        distance: '约1.5km',
+        tags: ['爆珠煲仔饭', '猎奇', '创新'],
+        desc: '招牌爆珠（猪眼睛）煲仔饭，一口爆汁敢不敢挑战？'
+      },
+      {
+        name: '容里煲仔饭',
+        address: '顺德区容桂容里社区利丰北路1号',
+        distance: '约4km',
+        tags: ['黄鳝煲仔饭', '牛肉窝蛋', '街坊店'],
+        desc: '容桂街坊煲仔饭，黄鳝煲仔饭分量很大'
+      },
+      {
+        name: '容边御品排骨饭',
+        address: '顺德区大良容桂居委会容边路7号',
+        distance: '约3km',
+        tags: ['排骨饭', '干蒸', '老字号'],
+        desc: '10年老字号，干蒸拉丝芝士牛肉很受欢迎'
+      },
+      
+      // ===== 烧烤/夜宵类 =====
+      {
+        name: '大富豪烧鸡·烧烤大排档（海尾店）',
+        address: '顺德区容桂文滘路24号',
+        distance: '约3.6km',
+        tags: ['潮汕砂锅粥', '荔枝木烧鸡', '烧烤'],
+        desc: '主打潮汕特色砂锅粥配荔枝木烧鸡，宵夜首选'
+      },
+      {
+        name: '汝好烧烤',
+        address: '顺德区容桂',
+        distance: '约3.4km',
+        tags: ['烧烤', '夜宵', '炭火'],
+        desc: '容桂夜宵一条街上的烧烤店，朋友聚会好去处'
+      },
+      {
+        name: '好声音烧烤吧',
+        address: '顺德区容桂容奇大道169号海骏达',
+        distance: '约3km',
+        tags: ['烧烤', 'KTV配套', '夜宵'],
+        desc: '吃烧烤还能唱歌，夜宵新选择'
+      },
+      {
+        name: '周记砂锅粥·平价烧烤',
+        address: '顺德区容桂容里昌发路8号',
+        distance: '约4.2km',
+        tags: ['砂锅粥', '烧烤', '平价'],
+        desc: '砂锅粥配烧烤，容桂夜宵性价比之选'
+      },
+      {
+        name: '香巴佬烤鱼（伦教店）',
+        address: '顺德区伦教新丰路133号',
+        distance: '约5.5km',
+        tags: ['烤鱼', '夜宵', '麻辣'],
+        desc: '伦教夜宵店，烤鱼配啤酒很过瘾'
+      },
+      {
+        name: '长顺烧烤（容桂店）',
+        address: '顺德区容桂容奇大道中72号',
+        distance: '约3.1km',
+        tags: ['烧烤', '凌晨营业', '烤串'],
+        desc: '招牌大鸡腿超好吃，凌晨2点还排队'
+      },
+      {
+        name: '相聚幸福大排档',
+        address: '顺德区容桂',
+        distance: '约3.5km',
+        tags: ['宵夜', '烧烤', '牛蛙煲'],
+        desc: '本地人常去的夜宵大排档，烧烤牛蛙煲都有'
+      },
+      
+      // ===== 甜品/糖水类 =====
+      {
+        name: '民信老铺（华盖路店）',
+        address: '顺德区大良华盖里1号',
+        distance: '约1.3km',
+        tags: ['百年老店', '双皮奶', '水牛奶'],
+        desc: '顺德双皮奶老字号，奶皮醇厚甜而不腻'
+      },
+      {
+        name: '仁信老铺（大良店）',
+        address: '顺德区大良华盖路119号',
+        distance: '约1.3km',
+        tags: ['广东老字号', '双皮奶', '百年传承'],
+        desc: '百年品牌三代人传承，双皮奶是第一大祖传甜品'
+      },
+      {
+        name: '何姨葛水（丹桂店）',
+        address: '顺德区大良丹桂路5号翠景轩',
+        distance: '约1.8km',
+        tags: ['20年老店', '葛水', '手磨糊'],
+        desc: '大良家喻户晓的良心糖水铺，葛水清润又足料'
+      },
+      {
+        name: '周大娘牛乳（金榜总部店）',
+        address: '顺德区大良金榜',
+        distance: '约2km',
+        tags: ['百年传承', '非遗', '水牛奶'],
+        desc: '非遗咸牛乳拿铁、牛乳钵仔糕，传统创新都有'
+      },
+      {
+        name: '霞姐双皮奶',
+        address: '顺德区大良金榜上街',
+        distance: '约2km',
+        tags: ['街坊店', '双皮奶', '姜撞奶'],
+        desc: '金榜街本地人常去的店，双皮奶新鲜现做'
+      },
+      {
+        name: '细妹五香牛杂',
+        address: '顺德区大良华盖里直街1号',
+        distance: '约1.3km',
+        tags: ['牛杂', '老字号', '清晖园旁'],
+        desc: '清晖园附近必打卡，五香牛杂配糖水很搭'
+      },
+      {
+        name: '欢记牛乳',
+        address: '顺德区大良金榜上街19号',
+        distance: '约2km',
+        tags: ['水牛奶', '老字号', '双皮奶'],
+        desc: '金榜牛乳发源地，整条街飘着水牛奶的清甜'
+      },
+      {
+        name: '白森·顺德双皮奶奶茶',
+        address: '顺德区大良双皮奶大楼',
+        distance: '约1.5km',
+        tags: ['创意', '双皮奶茶', '减糖'],
+        desc: '民信传承人开的，可以喝的双皮奶奶茶，减糖40%'
+      },
+      
+      // ===== 茶饮/咖啡类 =====
+      {
+        name: 'Hashtag井号茶室',
+        address: '顺德区大良东乐路85号',
+        distance: '约2km',
+        tags: ['网红茶饮', '柠檬茶', 'INS风'],
+        desc: '顺德网红茶铺子，柠檬茶有100种喝法'
+      },
+      {
+        name: 'dehaus COFFEE（顺峰山店）',
+        address: '顺德区大良顺峰山公园汀址楼',
+        distance: '约4km',
+        tags: ['公园咖啡', '环境好', '特调'],
+        desc: '藏在顺峰山公园里的咖啡厅，阳光绿植氛围满分'
+      },
+      {
+        name: '城隅啡香馆',
+        address: '顺德区大良',
+        distance: '约1.8km',
+        tags: ['冠军咖啡', '特调', '社区店'],
+        desc: '全国咖啡冠军坐镇，简单交流就能感受到专业'
+      },
+      {
+        name: '大象咖啡（大良店）',
+        address: '顺德区大良新能源汽车小镇',
+        distance: '约3km',
+        tags: ['创意园', '咖啡', '商务'],
+        desc: '科创中心里的咖啡店，环境安静适合办公'
+      },
+      {
+        name: 'YAMA（苏岗店）',
+        address: '顺德区大良苏岗北坊公园附近',
+        distance: '约2.5km',
+        tags: ['日式庭院', '手冲', '特调'],
+        desc: '青砖瓦顶房改造的咖啡店，日式庭院环境很温馨'
+      },
+      {
+        name: '漫笙舍（苏岗店）',
+        address: '顺德区大良苏岗',
+        distance: '约2.6km',
+        tags: ['旧屋活化', '花园', '出片'],
+        desc: '旧屋改造成的咖啡店，花园绿植遍布超适合拍照'
+      },
+      {
+        name: '林记制啡（苏岗店）',
+        address: '顺德区大良苏岗',
+        distance: '约2.5km',
+        tags: ['艺术拉花', '咖啡', '稳定出品'],
+        desc: '艺术拿铁为招牌，拉花图案有求必应'
+      },
+      {
+        name: '回炉制物（苏岗店）',
+        address: '顺德区大良苏岗',
+        distance: '约2.6km',
+        tags: ['文艺', '创意特调', '治愈'],
+        desc: '诙谐小梗充满哲理，创意特调咖啡让人放松'
+      },
+      {
+        name: '畔林闲筑（苏岗店）',
+        address: '顺德区大良苏岗',
+        distance: '约2.7km',
+        tags: ['茶咖一体', '新中式', '甜品'],
+        desc: '新中式茶馆，茶和咖啡都有，甜品简餐也丰富'
       }
     ];
 
@@ -1107,11 +1554,87 @@
       `).join('');
     }
 
+    // Get emoji for store
+    function getStoreEmoji(subcategory) {
+      const emojiMap = {
+        '饺子': '🥟',
+        '云吞面': '🍜',
+        '肠粉': '🥣',
+        '粤菜': '🦐',
+        '川菜': '🌶️',
+        '湘菜': '🔥',
+        '火锅': '🍲',
+        '煲仔饭': '🍚',
+        '盖饭': '🍱',
+        '炒饭': '🍳',
+        '烧烤': '🍢',
+        '奶茶': '🧋',
+        '咖啡': '☕',
+        '茶饮': '🍵',
+        '果汁': '🍹'
+      };
+      return emojiMap[subcategory] || '🏪';
+    }
+
     // Render Store List
     function renderStores() {
       const list = document.getElementById('storeList');
       
-      if (currentSubcategory !== '饺子') {
+      // Filter stores by subcategory
+      const filteredStores = stores.filter(store => {
+        // 饺子类
+        if (currentSubcategory === '饺子') {
+          return store.name.includes('袁记') || store.name.includes('云饺');
+        }
+        // 云吞面类
+        if (currentSubcategory === '云吞面') {
+          return store.name.includes('面') || store.name.includes('记') || 
+                 store.name.includes('牛乳') || store.name.includes('云吞');
+        }
+        // 肠粉类
+        if (currentSubcategory === '肠粉') {
+          return store.name.includes('肠粉') || store.name.includes('早餐') || 
+                 store.name.includes('茶记');
+        }
+        // 粤菜类
+        if (currentSubcategory === '粤菜') {
+          return store.tags.includes('顺德菜') || store.tags.includes('粤菜') || 
+                 store.tags.includes('鱼生') || store.name.includes('毋米粥') ||
+                 store.name.includes('粥底');
+        }
+        // 火锅类
+        if (currentSubcategory === '火锅') {
+          return store.name.includes('粥') || store.name.includes('火锅') || 
+                 store.name.includes('打边炉') || store.tags.includes('粥底火锅') ||
+                 store.tags.includes('清水打边炉') || store.tags.includes('清水火锅');
+        }
+        // 煲仔饭类 - 属于套餐子类
+        if (currentSubcategory === '套餐') {
+          return store.name.includes('煲仔饭') || store.name.includes('排骨饭');
+        }
+        // 烧烤类
+        if (currentSubcategory === '烧烤') {
+          return store.tags.includes('烧烤') || store.tags.includes('烤鱼') || 
+                 store.tags.includes('宵夜');
+        }
+        // 奶茶类
+        if (currentSubcategory === '奶茶') {
+          return store.name.includes('茶') && !store.name.includes('茶餐厅');
+        }
+        // 咖啡类
+        if (currentSubcategory === '咖啡') {
+          return store.name.includes('咖啡') || store.name.includes('CAFÉ') ||
+                 store.name.includes('啡');
+        }
+        // 茶饮类
+        if (currentSubcategory === '茶饮') {
+          return store.name.includes('茶室') || store.name.includes('茶馆') ||
+                 store.name.includes('茶');
+        }
+        return false;
+      });
+      
+      if (filteredStores.length === 0) {
         list.innerHTML = `
           <div class="no-store">
             <div class="emoji">🚧</div>
@@ -1125,21 +1648,27 @@
       }
       
       const claimed = getClaimedCoupons();
-      list.innerHTML = stores.map(store => {
+      const emoji = getStoreEmoji(currentSubcategory);
+      
+      list.innerHTML = filteredStores.map(store => {
         const claimedStore = claimed[store.name];
+        const hasCoupon = store.coupon && store.price;
+        
         return `
           <div class="store-card">
             <div class="store-header">
-              <div class="store-logo">🥟</div>
+              <div class="store-logo">${emoji}</div>
               <div class="store-info">
                 <div class="store-name">${store.name}</div>
-                <div class="store-address">${store.address}</div>
+                <div class="store-address">📍 ${store.address}</div>
               </div>
               <div class="store-distance">${store.distance}</div>
             </div>
             <div class="store-tags">
               ${store.tags.map(t => `<span class="store-tag">${t}</span>`).join('')}
             </div>
+            ${store.desc ? `<div class="store-desc">${store.desc}</div>` : ''}
+            ${hasCoupon ? `
             <div class="coupon-info">
               <div class="coupon-left">
                 <div class="coupon-icon">🎫</div>
@@ -1153,6 +1682,7 @@
                 ${claimedStore ? '已领取' : '领取优惠券'}
               </button>
             </div>
+            ` : ''}
           </div>
         `;
       }).join('');
@@ -1187,7 +1717,7 @@
           </div>
         </div>
         
-        <button class="coupon-action-btn" id="showAddressBtn">去吃饺子！</button>
+        <button class="coupon-action-btn" id="showAddressBtn">去拔草！</button>
         
         <div class="coupon-tip">
           📸 截图保存此页面，到店出示即可使用
@@ -1477,7 +2007,7 @@
 
     // Init
     renderCategories();
-    console.log('灵感发散器 v1.1 已加载');
+    console.log('灵感发散器 v1.2 已加载');
   </script>
 </body>
 </html>
