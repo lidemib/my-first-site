@@ -653,6 +653,227 @@
       cursor: pointer;
       margin-top: 15px;
     }
+
+    /* My Coupons View */
+    .my-coupons-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: rgba(255,255,255,0.25);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      z-index: 101;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .my-coupons-btn:active {
+      background: rgba(255,255,255,0.4);
+    }
+
+    .my-coupon-item {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: 16px;
+      padding: 20px;
+      color: white;
+      margin-bottom: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .my-coupon-item.used {
+      opacity: 0.5;
+      filter: grayscale(0.5);
+    }
+
+    .my-coupon-item .store-name {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .my-coupon-item .price-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .my-coupon-item .price {
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    .my-coupon-item .price span {
+      font-size: 16px;
+    }
+
+    .my-coupon-item .code {
+      font-size: 16px;
+      font-family: monospace;
+      letter-spacing: 2px;
+      background: rgba(255,255,255,0.2);
+      padding: 8px 12px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .my-coupon-item .status {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .my-coupon-item .status.used {
+      color: #FFD700;
+      font-weight: 600;
+    }
+
+    .verify-btn {
+      width: 100%;
+      background: rgba(255,255,255,0.25);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.4);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .verify-btn:active {
+      background: rgba(255,255,255,0.4);
+    }
+
+    .verify-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Verify Modal */
+    .verify-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .verify-modal.active {
+      display: flex;
+    }
+
+    .verify-content {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 320px;
+      width: 100%;
+      text-align: center;
+      animation: modalIn 0.3s ease;
+    }
+
+    .verify-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .verify-subtitle {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 20px;
+    }
+
+    .verify-input {
+      width: 100%;
+      padding: 14px;
+      font-size: 20px;
+      text-align: center;
+      letter-spacing: 8px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 15px;
+      outline: none;
+    }
+
+    .verify-input:focus {
+      border-color: var(--primary);
+    }
+
+    .verify-submit {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .verify-submit:active {
+      background: var(--primary-light);
+    }
+
+    .verify-cancel {
+      width: 100%;
+      background: #f5f5f5;
+      color: var(--text);
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .verify-result {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 15px 0;
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    .verify-result.success {
+      background: #E8F5E9;
+      color: #2E7D32;
+    }
+
+    .verify-result.error {
+      background: #FFEBEE;
+      color: #C62828;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-light);
+    }
+
+    .empty-state .emoji {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .empty-state .text {
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -710,11 +931,19 @@
     <div class="view" id="view5">
       <div class="coupon-view" id="couponView"></div>
     </div>
+
+    <!-- View 6: My Coupons -->
+    <div class="view" id="view6">
+      <div id="myCouponsList"></div>
+    </div>
   </div>
+
+  <!-- My Coupons Button (fixed, always visible) -->
+  <button class="my-coupons-btn" id="myCouponsBtn" style="display:none;">🎫</button>
 
   <!-- Footer -->
   <div class="footer">
-    灵感发散器 v1.0 | 让选择变简单
+    灵感发散器 v1.1 | 让选择变简单
   </div>
 
   <!-- Welcome Modal -->
@@ -736,6 +965,17 @@
       <div class="address-title">🏪 门店地址</div>
       <div id="addressList"></div>
       <button class="address-close" id="closeAddress">关闭</button>
+    </div>
+  </div>
+
+  <!-- Verify Modal -->
+  <div class="verify-modal" id="verifyModal">
+    <div class="verify-content" id="verifyContent">
+      <div class="verify-title">商家核销</div>
+      <div class="verify-subtitle" id="verifySubtitle">请输入4位核销密码</div>
+      <input type="password" class="verify-input" id="verifyInput" maxlength="4" placeholder="••••" inputmode="numeric">
+      <button class="verify-submit" id="verifySubmit">确认核销</button>
+      <button class="verify-cancel" id="verifyCancel">取消</button>
     </div>
   </div>
 
@@ -791,8 +1031,16 @@
 
     function saveClaimedCoupon(storeName, code) {
       const claimed = getClaimedCoupons();
-      claimed[storeName] = { code, time: Date.now() };
+      claimed[storeName] = { code, time: Date.now(), used: false };
       localStorage.setItem('claimedCoupons', JSON.stringify(claimed));
+    }
+
+    function markCouponUsed(storeName) {
+      const claimed = getClaimedCoupons();
+      if (claimed[storeName]) {
+        claimed[storeName].used = true;
+        localStorage.setItem('claimedCoupons', JSON.stringify(claimed));
+      }
     }
 
     function isClaimed(storeName) {
@@ -807,14 +1055,23 @@
       
       const backBtn = document.getElementById('backBtn');
       const breadcrumb = document.getElementById('breadcrumb');
+      const myCouponsBtn = document.getElementById('myCouponsBtn');
+      const hasCoupons = Object.keys(getClaimedCoupons()).length > 0;
       
       if (viewNum === 1) {
         backBtn.style.display = 'none';
         breadcrumb.style.display = 'none';
         document.getElementById('headerTitle').textContent = '灵感发散器';
+        myCouponsBtn.style.display = hasCoupons ? 'flex' : 'none';
+      } else if (viewNum === 6) {
+        backBtn.style.display = 'flex';
+        breadcrumb.style.display = 'block';
+        document.getElementById('headerTitle').textContent = '我的优惠券';
+        myCouponsBtn.style.display = 'none';
       } else {
         backBtn.style.display = 'flex';
         breadcrumb.style.display = 'block';
+        myCouponsBtn.style.display = hasCoupons ? 'flex' : 'none';
       }
     }
 
@@ -959,7 +1216,13 @@
       const activeView = document.querySelector('.view.active');
       const viewId = activeView.id;
       
-      if (viewId === 'view5') {
+      if (viewId === 'view6') {
+        currentScene = '';
+        currentCategory = '';
+        currentSubcategory = '';
+        showView(1);
+        updateBreadcrumb();
+      } else if (viewId === 'view5') {
         // Back to store list
         showView(4);
         updateBreadcrumb();
@@ -1054,9 +1317,167 @@
       }
     };
 
+    // ===== My Coupons Feature =====
+    const VERIFY_CODE = '0682'; // 门店核销密码
+
+    function renderMyCoupons() {
+      const claimed = getClaimedCoupons();
+      const list = document.getElementById('myCouponsList');
+      const keys = Object.keys(claimed);
+      
+      if (keys.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="emoji">🎫</div>
+            <div class="text">还没有优惠券<br>去选一家店领取吧！</div>
+          </div>
+        `;
+        return;
+      }
+      
+      list.innerHTML = keys.map(storeName => {
+        const data = claimed[storeName];
+        const store = stores.find(s => s.name === storeName);
+        const price = store ? store.price : 5;
+        const isUsed = data.used;
+        
+        return `
+          <div class="my-coupon-item ${isUsed ? 'used' : ''}">
+            <div class="store-name">${storeName}</div>
+            <div class="price-row">
+              <div class="price"><span>¥</span>${price}</div>
+              <div class="status ${isUsed ? 'used' : ''}">${isUsed ? '✓ 已核销' : '未使用'}</div>
+            </div>
+            <div class="code">${data.code}</div>
+            <div class="status">有效期至 2026年6月30日</div>
+            ${!isUsed ? '<button class="verify-btn" data-store="' + storeName + '">商家核销</button>' : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // My Coupons button click
+    document.getElementById('myCouponsBtn').onclick = function() {
+      renderMyCoupons();
+      showView(6);
+    };
+
+    // Verify modal logic
+    let currentVerifyStore = null;
+
+    document.getElementById('myCouponsList').onclick = function(e) {
+      const btn = e.target.closest('.verify-btn');
+      if (btn) {
+        currentVerifyStore = btn.dataset.store;
+        document.getElementById('verifySubtitle').textContent = '核销：' + currentVerifyStore;
+        document.getElementById('verifyInput').value = '';
+        document.getElementById('verifyInput').focus();
+        document.getElementById('verifyModal').classList.add('active');
+      }
+    };
+
+    document.getElementById('verifySubmit').onclick = function() {
+      const input = document.getElementById('verifyInput').value;
+      const content = document.getElementById('verifyContent');
+      
+      if (input === VERIFY_CODE) {
+        markCouponUsed(currentVerifyStore);
+        content.innerHTML = `
+          <div class="verify-result success">✅ 核销成功！</div>
+          <div style="font-size:13px;color:#666;margin-bottom:15px;">${currentVerifyStore} 优惠券已核销</div>
+          <button class="verify-cancel" id="verifyCancelBtn">完成</button>
+        `;
+        document.getElementById('verifyCancelBtn').onclick = function() {
+          document.getElementById('verifyModal').classList.remove('active');
+          renderMyCoupons();
+        };
+      } else {
+        content.innerHTML = `
+          <div class="verify-result error">❌ 密码错误</div>
+          <div style="font-size:13px;color:#666;margin-bottom:15px;">请输入正确的4位核销密码</div>
+          <button class="verify-cancel" id="verifyRetryBtn">重新输入</button>
+        `;
+        document.getElementById('verifyRetryBtn').onclick = function() {
+          // Reset to original verify modal
+          document.getElementById('verifyModal').classList.remove('active');
+          setTimeout(function() {
+            document.getElementById('verifyContent').innerHTML = `
+              <div class="verify-title">商家核销</div>
+              <div class="verify-subtitle" id="verifySubtitle">核销：${currentVerifyStore}</div>
+              <input type="password" class="verify-input" id="verifyInput" maxlength="4" placeholder="••••" inputmode="numeric">
+              <button class="verify-submit" id="verifySubmit">确认核销</button>
+              <button class="verify-cancel" id="verifyCancel">取消</button>
+            `;
+            bindVerifyEvents();
+            document.getElementById('verifyModal').classList.add('active');
+            document.getElementById('verifyInput').focus();
+          }, 100);
+        };
+      }
+    };
+
+    function bindVerifyEvents() {
+      document.getElementById('verifySubmit').onclick = function() {
+        const input = document.getElementById('verifyInput').value;
+        const content = document.getElementById('verifyContent');
+        
+        if (input === VERIFY_CODE) {
+          markCouponUsed(currentVerifyStore);
+          content.innerHTML = `
+            <div class="verify-result success">✅ 核销成功！</div>
+            <div style="font-size:13px;color:#666;margin-bottom:15px;">${currentVerifyStore} 优惠券已核销</div>
+            <button class="verify-cancel" id="verifyCancelBtn">完成</button>
+          `;
+          document.getElementById('verifyCancelBtn').onclick = function() {
+            document.getElementById('verifyModal').classList.remove('active');
+            // Restore original verify modal HTML
+            document.getElementById('verifyContent').innerHTML = `
+              <div class="verify-title">商家核销</div>
+              <div class="verify-subtitle" id="verifySubtitle">请输入4位核销密码</div>
+              <input type="password" class="verify-input" id="verifyInput" maxlength="4" placeholder="••••" inputmode="numeric">
+              <button class="verify-submit" id="verifySubmit">确认核销</button>
+              <button class="verify-cancel" id="verifyCancel">取消</button>
+            `;
+            bindVerifyEvents();
+            renderMyCoupons();
+          };
+        } else {
+          content.innerHTML = `
+            <div class="verify-result error">❌ 密码错误</div>
+            <div style="font-size:13px;color:#666;margin-bottom:15px;">请输入正确的4位核销密码</div>
+            <button class="verify-cancel" id="verifyRetryBtn">重新输入</button>
+          `;
+          document.getElementById('verifyRetryBtn').onclick = function() {
+            document.getElementById('verifyModal').classList.remove('active');
+            setTimeout(function() {
+              document.getElementById('verifyContent').innerHTML = `
+                <div class="verify-title">商家核销</div>
+                <div class="verify-subtitle" id="verifySubtitle">核销：${currentVerifyStore}</div>
+                <input type="password" class="verify-input" id="verifyInput" maxlength="4" placeholder="••••" inputmode="numeric">
+                <button class="verify-submit" id="verifySubmit">确认核销</button>
+                <button class="verify-cancel" id="verifyCancel">取消</button>
+              `;
+              bindVerifyEvents();
+              document.getElementById('verifyModal').classList.add('active');
+              document.getElementById('verifyInput').focus();
+            }, 100);
+          };
+        }
+      };
+
+      document.getElementById('verifyCancel').onclick = function() {
+        document.getElementById('verifyModal').classList.remove('active');
+      };
+    }
+
+    // Initial bind
+    document.getElementById('verifyCancel').onclick = function() {
+      document.getElementById('verifyModal').classList.remove('active');
+    };
+
     // Init
     renderCategories();
-    console.log('灵感发散器 v1.0 已加载');
+    console.log('灵感发散器 v1.1 已加载');
   </script>
 </body>
 </html>
